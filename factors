@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import sys
+import time
+
+def factorize(number):
+    factors = []
+    divisor = 2
+
+    while number > 1:
+        while number % divisor == 0:
+            factors.append(divisor)
+            number //= divisor
+        divisor += 1
+
+    return factors
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: {} <file>".format(sys.argv[0]))
+        sys.exit(1)
+
+    filename = sys.argv[1]
+
+    try:
+        with open(filename, 'r') as f:
+            numbers = f.read().splitlines()
+    except FileNotFoundError:
+        print("Error: File '{}' not found.".format(filename))
+        sys.exit(1)
+
+    for number_str in numbers:
+        try:
+            number = int(number_str)
+        except ValueError:
+            print("Error: '{}' is not a valid number.".format(number_str))
+            continue
+
+        start_time = time.time()
+        factors = factorize(number)
+        end_time = time.time()
+
+        print("{}={}".format(number, "*".join(map(str, factors))))
+
+        elapsed_time = end_time - start_time
+        print("Time taken: {:.3f} seconds".format(elapsed_time))
+
+if __name__ == "__main__":
+    main()
+
