@@ -1,66 +1,19 @@
 #!/usr/bin/env python3
 
-import sys
-import math
+from sys import argv
 
-def is_prime(n):
-    if n <= 1:
-        return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
-            return False
-        i += 6
-    return True
-
-def smallest_prime_factor(n):
-    if n <= 1:
-        return None
-    if n % 2 == 0:
-        return 2
-    for i in range(3, int(math.sqrt(n)) + 1, 2):
-        if n % i == 0:
-            return i
-    return n
-
-def factorize_rsa(n):
-    if n <= 1:
-        return "Invalid RSA number"
-    if is_prime(n):
-        return "{}=1*{}".format(n, n)
-
-    p = smallest_prime_factor(n)
-    q = n // p
-
-    return "{}={}*{}".format(n, p, q)
-
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: {} <file>".format(sys.argv[0]))
-        sys.exit(1)
-
-    filename = sys.argv[1]
-
-    try:
-        with open(filename, 'r') as f:
-            rsa_numbers = f.read().splitlines()
-    except FileNotFoundError:
-        print("Error: File '{}' not found.".format(filename))
-        sys.exit(1)
-
-    for rsa_number_str in rsa_numbers:
-        try:
-            rsa_number = int(rsa_number_str)
-        except ValueError:
-            print("Error: '{}' is not a valid RSA number.".format(rsa_number_str))
+with open(argv[1]) as f:
+    for line in f:
+        num = int(line)
+        print("{:d}=".format(num), end="")
+        if num % 2 == 0:
+            print("{}*2".format(num//2))
             continue
-
-        factorization = factorize_rsa(rsa_number)
-        print(factorization)
-
-if __name__ == "__main__":
-    main()
+        for i in range(3, num, 2):
+            if num % i == 0:
+                factor = num//i
+                for j in range(3, factor, 2):
+                    if factor % j == 0 or i % j == 0:
+                        break
+                print("{}*{}".format(factor, i))
+                break
